@@ -167,6 +167,22 @@ namespace libsocket
         int fd = sock.getfd();
         FD_CLR(fd, &readset);
         FD_CLR(fd, &writeset);
+
+        {
+            auto & element = fdsockmap.find(fd);
+            if (element != fdsockmap.end())
+            {
+                fdsockmap.erase(fd);
+            }
+        }
+
+        {
+            auto position = std::find(filedescriptors, fd);
+            if (position != -1 )
+            {
+                filedescriptors.erase(filedescriptors.begin() + position);
+            }
+        }
     }
 
     /**
