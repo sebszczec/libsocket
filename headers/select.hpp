@@ -95,6 +95,7 @@ namespace libsocket
 	    selectset();
 
 	    void add_fd(const SocketT& sock, int method);
+        void remove_fd(const Socket T&);
 
 	    std::pair<std::vector<SocketT*>, std::vector<SocketT*> > wait(long long microsecs=0);
 	    typedef std::pair<std::vector<SocketT*>, std::vector<SocketT*> > ready_socks;
@@ -151,6 +152,21 @@ namespace libsocket
 	    fdsockmap[fd] = const_cast<SocketT*>(&sock);
 	    set_up = true;
 	}
+    }
+
+    /**
+     * @brief Remove a socket from all internal sets
+     *
+     * @param sock Some socket. May be server or client socket.
+     * @param method `LIBSOCKET_READ`/`LIBSOCKET_WRITE` or an `OR`ed combination thereof. Determines if the socket is checked on the possibility to read or to write.
+     *
+     */
+    template<typename SocketT>
+    void selectset<SocketT>::remove_fd(const SocketT& sock)
+    {
+        int fd = sock.getfd();
+        FD_CLR(fd, &readset);
+        FD_CLR(fd, &writeset);
     }
 
     /**
