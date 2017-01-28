@@ -95,7 +95,7 @@ namespace libsocket
 	    selectset();
 
 	    void add_fd(const SocketT& sock, int method);
-        void remove_fd(const Socket T&);
+        void remove_fd(const SocketT& sock);
 
 	    std::pair<std::vector<SocketT*>, std::vector<SocketT*> > wait(long long microsecs=0);
 	    typedef std::pair<std::vector<SocketT*>, std::vector<SocketT*> > ready_socks;
