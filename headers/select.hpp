@@ -169,7 +169,7 @@ namespace libsocket
         FD_CLR(fd, &writeset);
 
         {
-            auto & element = fdsockmap.find(fd);
+            auto element = fdsockmap.find(fd);
             if (element != fdsockmap.end())
             {
                 fdsockmap.erase(fd);
@@ -177,10 +177,10 @@ namespace libsocket
         }
 
         {
-            auto position = std::find(filedescriptors, fd);
-            if (position != -1 )
+            auto result = std::find(filedescriptors.begin(), filedescriptors.end(), fd);
+            if (result != filedescriptors.end())
             {
-                filedescriptors.erase(filedescriptors.begin() + position);
+                filedescriptors.erase(result);
             }
         }
     }
