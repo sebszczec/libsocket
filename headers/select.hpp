@@ -90,6 +90,9 @@ namespace libsocket
 	    fd_set readset; ///< The fd_set for select with the descriptors waiting for read
 	    fd_set writeset; ///< and the descriptors waiting for write
 
+        fd_set tempreadset;
+        fd_set tempwriteset;
+
 	public:
 
 	    selectset();
@@ -199,6 +202,7 @@ namespace libsocket
     template<typename SockT>
     typename selectset<SockT>::ready_socks selectset<SockT>::wait(long long microsecs)
     {
+
 	int n = 0;
 
 	struct timeval *timeout = NULL;
@@ -216,7 +220,10 @@ namespace libsocket
 	    _timeout.tv_usec = micropart;
 	}
 
-	n = select(highestfd(filedescriptors)+1,&readset,&writeset,NULL,timeout);
+    memcpy(&tempreadset, &readset, sizeof(tempreadset));
+    memcpy(&tempwriteset, &writeset, sizeof(tempwriteset));
+
+	n = select(highestfd(filedescriptors) + 1, &tempreadset, &tempwriteset, NULL, timeout);
 
 	ready_socks rwfds;
 
@@ -238,10 +245,10 @@ namespace libsocket
 
 	for ( std::vector<int>::iterator cur = filedescriptors.begin(); cur != end; cur++ )
 	{
-	    if ( FD_ISSET(*cur,&readset) )
+	    if ( FD_ISSET(*cur, &tempreadset) )
 		rwfds.first.push_back(fdsockmap[*cur]);
 
-	    if ( FD_ISSET(*cur,&writeset) )
+	    if ( FD_ISSET(*cur, &tempwriteset) )
 		rwfds.second.push_back(fdsockmap[*cur]);
 	}
 
