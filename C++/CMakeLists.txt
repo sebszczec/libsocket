@@ -27,6 +27,7 @@ unixserverdgram.cpp
 )
 
 ADD_LIBRARY(socket++ SHARED ${sources})
+ADD_LIBRARY(socket++_static ${sources})
 
 TARGET_LINK_LIBRARIES(socket++ socket_int)
 
